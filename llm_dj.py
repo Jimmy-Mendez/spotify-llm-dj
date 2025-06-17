@@ -1,7 +1,12 @@
-import openai
+from openai import OpenAI
 import spotipy
 from user_data import get_user_top_tracks
 from spotipy.oauth2 import SpotifyOAuth
+from dotenv import load_dotenv
+import os
+
+load_dotenv()  # Load environment variables from .env
+client = OpenAI()
 
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope="user-read-private"))
 
@@ -9,10 +14,16 @@ def prompt_llm(user_prompt, top_tracks):
     track_descriptions = [f"{t['name']} by {t['artist']}" for t in top_tracks]
     context = "\n".join(track_descriptions)
 
-    messages = [{
-        "role": "system", "content": "You are an expert DJ and music recommender. You blend vibes with user history."
-    }, {
-        "role": "user", "content": f"""
+    res = client.chat.completions.create(  # <-- update method name
+        model="gpt-4o",  # or "gpt-4.0", "gpt-4-turbo" if using chat
+        messages=[
+            {
+                "role": "system",
+                "content": "You are an expert DJ and music recommender. You blend vibes with user history."
+            },
+            {
+                "role": "user",
+                "content": f"""
 User prompt: "{user_prompt}"
 
 The user often listens to:
@@ -20,15 +31,12 @@ The user often listens to:
 
 Generate a setlist of 10 songs that match the user's taste and fit the described vibe.
 Output just the list of song names and artists.
-""" 
-    }]
-
-    res = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=messages,
-        temperature=0.8
+"""
+            }
+        ]
     )
-    return res.choices[0].message["content"]
+    return res.choices[0].message.content
+
 
 if __name__ == "__main__":
     user_prompt = input("🎧 What's your vibe? → ")

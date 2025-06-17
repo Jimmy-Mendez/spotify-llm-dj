@@ -1,6 +1,10 @@
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import json
+from dotenv import load_dotenv
+import os
+
+load_dotenv()  # Load environment variables from .env
 
 scope = "user-top-read"
 

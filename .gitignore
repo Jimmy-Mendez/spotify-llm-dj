@@ -1,2 +1,5 @@
 creds.txt
 token.txt
+.env
+.cache
+__pycache__/
