@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from spotipy.oauth2 import SpotifyOAuth
 import spotipy
 from dotenv import load_dotenv
@@ -11,6 +12,13 @@ from llm_dj import prompt_llm, get_spotify_tracks
 load_dotenv()
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+
+@app.get("/")
+def index():
+    """Serve the frontend HTML."""
+    return FileResponse("static/index.html")
 
 sp_oauth = SpotifyOAuth(
     scope="user-top-read playlist-modify-public playlist-modify-private user-read-private",
@@ -33,16 +41,12 @@ def callback(request: Request):
     token_info = sp_oauth.get_access_token(code)
     if not token_info:
         raise HTTPException(status_code=400, detail="Failed to get token")
-    request.session = {}
-    request.session['token_info'] = token_info
     return RedirectResponse(url="/")
 
 @app.post("/vibe")
-def set_vibe(vibe: str, request: Request):
+def set_vibe(vibe: str):
     if not vibe:
         raise HTTPException(status_code=400, detail="Vibe required")
-    request.session = getattr(request, 'session', {})
-    request.session['vibe'] = vibe
     user_prompts['vibe'] = vibe
     return {"vibe": vibe}
 
@@ -54,7 +58,7 @@ def get_vibe():
     return {"vibe": vibe}
 
 @app.post("/playlist")
-def make_playlist(request: Request):
+def make_playlist():
     vibe = user_prompts.get('vibe')
     if not vibe:
         raise HTTPException(status_code=400, detail="No vibe set")
