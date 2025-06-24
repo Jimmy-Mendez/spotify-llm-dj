@@ -25,8 +25,6 @@ sp_oauth = SpotifyOAuth(
     open_browser=False
 )
 
-# In-memory storage for user prompts
-user_prompts = {}
 
 @app.get("/login")
 def login():
@@ -43,25 +41,11 @@ def callback(request: Request):
         raise HTTPException(status_code=400, detail="Failed to get token")
     return RedirectResponse(url="/")
 
-@app.post("/vibe")
-def set_vibe(vibe: str):
-    if not vibe:
-        raise HTTPException(status_code=400, detail="Vibe required")
-    user_prompts['vibe'] = vibe
-    return {"vibe": vibe}
-
-@app.get("/vibe")
-def get_vibe():
-    vibe = user_prompts.get('vibe')
-    if not vibe:
-        raise HTTPException(status_code=404, detail="Vibe not set")
-    return {"vibe": vibe}
 
 @app.post("/playlist")
-def make_playlist():
-    vibe = user_prompts.get('vibe')
+def make_playlist(vibe: str):
     if not vibe:
-        raise HTTPException(status_code=400, detail="No vibe set")
+        raise HTTPException(status_code=400, detail="Vibe required")
     token_info = sp_oauth.get_cached_token()
     if not token_info:
         raise HTTPException(status_code=401, detail="Not authenticated")

@@ -14,19 +14,13 @@ async function checkAuth() {
 
 checkAuth();
 
-document.getElementById('setVibe').addEventListener('click', async () => {
-    const vibe = document.getElementById('vibeInput').value;
-    const res = await fetch('/vibe?vibe=' + encodeURIComponent(vibe), {method: 'POST'});
-    if (res.ok) {
-        const data = await res.json();
-        document.getElementById('status').textContent = 'Vibe set to: ' + data.vibe;
-    } else {
-        document.getElementById('status').textContent = 'Failed to set vibe';
-    }
-});
 
 document.getElementById('createPlaylist').addEventListener('click', async () => {
-    const res = await fetch('/playlist', {method: 'POST'});
+    const vibe = document.getElementById('vibeInput').value;
+    const spinner = document.getElementById('spinner');
+    spinner.style.display = 'inline-block';
+    const res = await fetch('/playlist?vibe=' + encodeURIComponent(vibe), {method: 'POST'});
+    spinner.style.display = 'none';
     if (res.ok) {
         const data = await res.json();
         document.getElementById('status').innerHTML = '<a href="' + data.playlist_url + '" target="_blank">Open Playlist</a>';
