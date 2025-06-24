@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from spotipy.oauth2 import SpotifyOAuth
 import spotipy
 from dotenv import load_dotenv
@@ -11,6 +12,13 @@ from llm_dj import prompt_llm, get_spotify_tracks
 load_dotenv()
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+
+@app.get("/")
+def index():
+    """Serve the frontend HTML."""
+    return FileResponse("static/index.html")
 
 sp_oauth = SpotifyOAuth(
     scope="user-top-read playlist-modify-public playlist-modify-private user-read-private",
