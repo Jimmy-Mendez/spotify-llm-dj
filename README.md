@@ -56,8 +56,6 @@ Key endpoints:
 
 - `GET /login` – obtain the Spotify authorisation URL.
 - `GET /callback` – OAuth redirect URI.
-- `POST /vibe` – set the desired vibe prompt.
-- `GET /vibe` – retrieve the currently stored vibe.
 - `POST /playlist` – generate and save the playlist to your account.
 - `GET /profile` – return the authenticated user's profile.
 
@@ -67,7 +65,6 @@ A very small web frontend is provided under `static/`. When the API server is
 running you can open `http://localhost:8000/` to interact with it:
 
 1. Click **Login with Spotify** to authenticate.
-2. Enter your vibe and click **Set Vibe**.
-3. Press **Create Playlist** to generate and save the playlist. A link to the
-   playlist will be shown on success.
+2. Enter your vibe and press **Create Playlist** to generate and save the
+   playlist. A link to the playlist will be shown on success.
 

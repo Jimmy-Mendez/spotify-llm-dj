@@ -3,14 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <title>LLM DJ</title>
+    <style>
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
     <h1>LLM DJ</h1>
     <button id="login">Login with Spotify</button>
     <div id="loggedin" style="display:none;">
         <input type="text" id="vibeInput" placeholder="Describe your vibe">
-        <button id="setVibe">Set Vibe</button>
         <button id="createPlaylist">Create Playlist</button>
+        <div id="spinner" class="spinner" style="display:none;"></div>
         <p id="status"></p>
     </div>
     <script src="/static/app.js"></script>
