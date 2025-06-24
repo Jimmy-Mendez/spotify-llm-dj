@@ -41,16 +41,12 @@ def callback(request: Request):
     token_info = sp_oauth.get_access_token(code)
     if not token_info:
         raise HTTPException(status_code=400, detail="Failed to get token")
-    request.session = {}
-    request.session['token_info'] = token_info
     return RedirectResponse(url="/")
 
 @app.post("/vibe")
-def set_vibe(vibe: str, request: Request):
+def set_vibe(vibe: str):
     if not vibe:
         raise HTTPException(status_code=400, detail="Vibe required")
-    request.session = getattr(request, 'session', {})
-    request.session['vibe'] = vibe
     user_prompts['vibe'] = vibe
     return {"vibe": vibe}
 
@@ -62,7 +58,7 @@ def get_vibe():
     return {"vibe": vibe}
 
 @app.post("/playlist")
-def make_playlist(request: Request):
+def make_playlist():
     vibe = user_prompts.get('vibe')
     if not vibe:
         raise HTTPException(status_code=400, detail="No vibe set")
