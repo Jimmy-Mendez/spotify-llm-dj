@@ -41,3 +41,23 @@ You will be prompted for a description of the vibe you want. After authorising w
 - `user_data.py` – helper that fetches your top tracks using the Spotify Web API.
 
 Enjoy your personalised DJ set!
+
+## API Server
+
+An optional FastAPI server is provided in `api.py` to expose REST
+endpoints for creating playlists. Install `fastapi` and `uvicorn` and
+run:
+
+```bash
+uvicorn api:app
+```
+
+Key endpoints:
+
+- `GET /login` – obtain the Spotify authorisation URL.
+- `GET /callback` – OAuth redirect URI.
+- `POST /vibe` – set the desired vibe prompt.
+- `GET /vibe` – retrieve the currently stored vibe.
+- `POST /playlist` – generate and save the playlist to your account.
+- `GET /profile` – return the authenticated user's profile.
+
