@@ -4,12 +4,17 @@ import spotipy
 from user_data import get_user_top_tracks
 from spotipy.oauth2 import SpotifyOAuth
 from dotenv import load_dotenv
-import os
+import re
 
 load_dotenv()  # Load environment variables from .env
 client = OpenAI()
 
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope="user-read-private"))
+
+def clean_json_string(json_string):
+    pattern = r'^```json\s*(.*?)\s*```$'
+    cleaned_string = re.sub(pattern, r'\1', json_string, flags=re.DOTALL)
+    return cleaned_string.strip()
 
 def prompt_llm(user_prompt, top_tracks):
     track_descriptions = [f"{t['name']} by {t['artist']}" for t in top_tracks]
@@ -30,8 +35,8 @@ User prompt: "{user_prompt}"
 The user often listens to:
 {context}
 
-Generate a setlist of 10 songs that match the user's taste and fit the described vibe.
-Return the setlist as a JSON array of objects with keys 'song' and 'artist'.
+Generate a setlist of 10-20 songs that match the user's taste and fit the described vibe.
+Return the setlist as a JSON array of objects with keys 'song' and 'artist'. Only return the json.
 """
             }
         ]
@@ -40,7 +45,8 @@ Return the setlist as a JSON array of objects with keys 'song' and 'artist'.
     content = res.choices[0].message.content
 
     try:
-        data = json.loads(content)
+        data = clean_json_string(content)
+        data = json.loads(data)
         if not isinstance(data, list):
             raise ValueError("Response is not a list")
         for item in data:
