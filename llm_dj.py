@@ -10,7 +10,9 @@ from difflib import SequenceMatcher
 load_dotenv()  # Load environment variables from .env
 client = OpenAI()
 
-sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope="user-read-private"))
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
+    scope="user-top-read playlist-modify-public playlist-modify-private user-read-private"
+))
 
 def clean_json_string(json_string):
     pattern = r'^```json\s*(.*?)\s*```$'
@@ -121,10 +123,15 @@ if __name__ == "__main__":
     top_tracks = get_user_top_tracks()
     try:
         setlist = prompt_llm(user_prompt, top_tracks)
+        setlist_spotify = get_spotify_tracks(setlist)
     except ValueError as e:
         print(f"Error: {e}")
     else:
         print("\n🎶 Your Personalized Set:\n")
-        for track in setlist:
-            print(f"{track['tracknum']}. {track['song']} - {track['artist']}")
+        i = 0
+        for track in setlist_spotify:
+            track_name = track["name"]
+            artist_name = track["artists"][0]["name"]
+            print(f"{i}. {artist_name} - {track_name}")
+            i+=1
 

@@ -6,9 +6,9 @@ import os
 
 load_dotenv()  # Load environment variables from .env
 
-scope = "user-top-read"
-
-sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
+    scope="user-top-read playlist-modify-public playlist-modify-private user-read-private"
+))
 
 def get_user_top_tracks(limit=20, time_range="medium_term"):
     top = sp.current_user_top_tracks(limit=limit, time_range=time_range)
