@@ -53,3 +53,6 @@ running you can open `http://localhost:8000/` to interact with it:
 2. Enter your vibe and press **Create Playlist** to generate and save the
    playlist. A link to the playlist will be shown on success.
 
+___
+
+I built this without realizing it was already a feature on Spotify lol
